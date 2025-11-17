@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>McElveen Empire — Command Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #020309;
+      --bg-card: #0b1220;
+      --bg-card-soft: #11182a;
+      --accent-green: #19c37d;
+      --accent-blue: #4ba3ff;
+      --accent-gold: #f5c063;
+      --text-main: #f8f9ff;
+      --text-muted: #c0c7dd;
+      --border: #3b4662;
+      --shadow-soft: 0 18px 45px rgba(0,0,0,0.9);
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(25,195,125,0.20), transparent 55%),
+        radial-gradient(circle at top right, rgba(75,163,255,0.22), transparent 60%),
+        #020309;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 20px 12px;
+    }
+
+    .shell {
+      max-width: 980px;
+      width: 100%;
+      background: linear-gradient(145deg, #050814, #020309);
+      border-radius: 26px;
+      padding: 18px 16px 20px;
+      border: 1px solid rgba(104,135,210,0.7);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(16px);
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 1.15rem;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--accent-green);
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      align-self: flex-start;
+      margin-top: 4px;
+      background: radial-gradient(circle at top left, rgba(25,195,125,0.35), #050814);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(25,195,125,0.8);
+      font-size: 0.78rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-main);
+    }
+
+    .badge span.icon {
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background:
+        radial-gradient(circle at top left, rgba(75,163,255,0.16), transparent 60%),
+        radial-gradient(circle at bottom right, rgba(25,195,125,0.18), transparent 55%),
+        var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 13px 12px 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.85);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .card-title span.icon {
+      font-size: 1.1rem;
+    }
+
+    .card-tag {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: rgba(7,10,22,0.96);
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(143,162,211,0.9);
+      padding: 3px 9px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+
+    .card-body {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .pill {
+      font-size: 0.74rem;
+      padding: 4px 9px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-card-soft);
+      border: 1px solid rgba(124,144,205,0.9);
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(75,163,255,1);
+      background:
+        radial-gradient(circle at top, rgba(75,163,255,0.35), #071023);
+      color: #ffffff;
+      font-size: 0.82rem;
+      font-weight: 500;
+      text-decoration: none;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.9);
+    }
+
+    .btn-link span.chevron {
+      font-size: 0.9rem;
+    }
+
+    .btn-link:active {
+      transform: translateY(1px);
+      box-shadow: 0 5px 18px rgba(0,0,0,0.8);
+    }
+
+    .footer {
+      border-top: 1px solid rgba(74,93,150,0.9);
+      margin-top: 14px;
+      padding-top: 9px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .legend-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 7px;
+      border-radius: var(--radius-pill);
+      background: #080e1c;
+      border: 1px solid rgba(124,144,205,0.9);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .legend-pill span.icon {
+      font-size: 0.85rem;
+    }
+
+    .hint {
+      text-align: right;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .hint code {
+      background: #050814;
+      border-radius: 6px;
+      padding: 1px 5px;
+      font-size: 0.7rem;
+      color: var(--accent-blue);
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 14px 8px;
+      }
+      .shell {
+        padding: 14px 12px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="title">MCELVEEN EMPIRE — COMMAND DASHBOARD</div>
+      <div class="subtitle">
+        Dark emerald deck • Optimized text contrast • Built for daily use with Sapphire.
+      </div>
+      <div class="badge">
+        <span class="icon">🧠</span>
+        <span>Sapphire Linked • Ops & Strategy</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Primary Command -->
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">🟣</span>
+          <span>Primary Command Channel</span>
+        </div>
+        <div class="card-tag">General / Routing</div>
+        <div class="card-body">
+          Main hub with Sapphire. Ask where something belongs, vent, plan your day, or get a quick answer.
+        </div>
+        <div class="pill-row">
+          <span class="pill">Brain dump</span>
+          <span class="pill">“Where does this go?”</span>
+          <span class="pill">Quick help</span>
+        </div>
+        <a class="btn-link" href="#PRIMARY_CHAT_LINK_HERE">
+          Open Primary Command <span class="chevron">↗</span>
+        </a>
+      </div>
+
+      <!-- Thursday Deliveries -->
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">🚚</span>
+          <span>Thursday Deliveries</span>
+        </div>
+        <div class="card-tag">SFS • Logistics</div>
+        <div class="card-body">
+          Dedicated thread for your Thursday supply route. Log who you’ve visited, what you dropped, and what’s left.
+        </div>
+        <div class="pill-row">
+          <span class="pill">TAGC</span>
+          <span class="pill">TIES</span>
+          <span class="pill">1100 Building</span>
+        </div>
+        <a class="btn-link" href="#THURSDAY_DELIVERY_CHAT_LINK_HERE">
+          Open Thursday Route <span class="chevron">↗</span>
+        </a>
+      </div>
+
+      <!-- SFS Operations Master -->
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">🧰</span>
+          <span>SFS Operations Master</span>
+        </div>
+        <div class="card-tag">SFS • Backbone</div>
+        <div class="card-body">
+          Master brain for Smith’s Facility Solutions: clients, employee teams, inventory, vehicles, and key SOPs.
+        </div>
+        <div class="pill-row">
+          <span class="pill">Client list</span>
+          <span class="pill">Employee teams</span>
+          <span class="pill">Inventory & vans</span>
+        </div>
+        <a class="btn-link" href="#SFS_OPERATIONS_CHAT_LINK_HERE">
+          Open SFS Ops Master <span class="chevron">↗</span>
+        </a>
+      </div>
+
+      <!-- Grace Episcopal Project -->
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">⛪</span>
+          <span>Grace Episcopal Project</span>
+        </div>
+        <div class="card-tag">SFS • Proposal</div>
+        <div class="card-body">
+          All scope notes for Grace Episcopal: hallways, rooms, frequencies, special requests, and proposal prep.
+        </div>
+        <div class="pill-row">
+          <span class="pill">Walkthrough notes</span>
+          <span class="pill">Scope & quotes</span>
+        </div>
+        <a class="btn-link" href="#GRACE_EPISCOPAL_CHAT_LINK_HERE">
+          Open Grace Project <span class="chevron">↗</span>
+        </a>
+      </div>
+
+      <!-- Familia AI Consulting -->
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">🌵</span>
+          <span>Familia AI Consulting</span>
+        </div>
+        <div class="card-tag">Business • Build-Out</div>
+        <div class="card-body">
+          Build and refine the AI consulting offer: $2.5K setup + $500/mo, targeting service businesses.
+        </div>
+        <div class="pill-row">
+          <span class="pill">Offers & pricing</span>
+          <span class="pill">Sales scripts</span>
+          <span class="pill">Client flows</span>
+        </div>
+        <a class="btn-link" href="#FAMILIA_AI_CHAT_LINK_HERE">
+          Open Familia AI <span class="chevron">↗</span>
+        </a>
+      </div>
+
+      <!-- AI Video Director -->
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">🎬</span>
+          <span>AI Video Director</span>
+        </div>
+        <div class="card-tag">Marketing • Media</div>
+        <div class="card-body">
+          Scripts, hooks, thumbnails, and posting plan for avatar + hybrid YouTube content.
+        </div>
+        <div class="pill-row">
+          <span class="pill">Hooks & CTAs</span>
+          <span class="pill">Content calendar</span>
+        </div>
+        <a class="btn-link" href="#AI_VIDEO_CHAT_LINK_HERE">
+          Open Video Director <span class="chevron">↗</span>
+        </a>
+      </div>
+
+      <!-- Schedule & Automations -->
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">⏱</span>
+          <span>Schedule & Automations</span>
+        </div>
+        <div class="card-tag">Time • Systems</div>
+        <div class="card-body">
+          Morning routine, weekly time blocks, automations, and reminder reviews (with “delete or keep?”).
+        </div>
+        <div class="pill-row">
+          <span class="pill">Morning routine</span>
+          <span class="pill">Weekly blocks</span>
+        </div>
+        <a class="btn-link" href="#SCHEDULE_AUTOMATIONS_CHAT_LINK_HERE">
+          Open Schedule Control <span class="chevron">↗</span>
+        </a>
+      </div>
+
+      <!-- Budget & Finance -->
+      <div class="card">
+        <div class="card-title">
+          <span class="icon">💵</span>
+          <span>Budget & Finance</span>
+        </div>
+        <div class="card-tag">Personal • Money</div>
+        <div class="card-body">
+          Personal budget snapshot: income, tithing, food, vehicles, savings, and debt paydown.
+        </div>
+        <div class="pill-row">
+          <span class="pill">Monthly budget</span>
+          <span class="pill">Savings</span>
+          <span class="pill">Debt payoff</span>
+        </div>
+        <a class="btn-link" href="#FINANCE_CHAT_LINK_HERE">
+          Open Budget Module <span class="chevron">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="legend">
+        <div class="legend-pill"><span class="icon">🟣</span><span>Command</span></div>
+        <div class="legend-pill"><span class="icon">🚚</span><span>Deliveries</span></div>
+        <div class="legend-pill"><span class="icon">🧰</span><span>SFS</span></div>
+        <div class="legend-pill"><span class="icon">🌵</span><span>Familia</span></div>
+      </div>
+      <div class="hint">
+        Replace <code>#..._CHAT_LINK_HERE</code> with real links when you’re ready.
+      </div>
+    </div>
+  </div>
+</body>
+</html>
